@@ -25,30 +25,30 @@ var carsImage = new Image();
 carsImage.src = "cars.png";
 
 class Car {
-    constructor(image, imageSrc, name, sxArray, x, y) {
+    constructor(image, imageSrc, name, x, y) {
         this.image = image;
         this.imageSrc = imageSrc;
         this.name = name;
-        this.sx = 0;
-        this.sxArray = sxArray;
+        this.sxArray = [15, 160, 305];
+        this.sx = this.sxArray[Math.floor(Math.random() * this.sxArray.length)]
         this.sy = 99;
-        this.swidth = 140;
+        this.swidth = 125;
         this.sheight = 60;
         this.x = x
         this.y = y;
         this.width = 75;
         this.height = 30;
-        }    
+    }
 }
 
-carOne = new Car(carsImage, carsImage.src, 'carOne', [0, 150, 300], 200, 400);
-carTwo = new Car(carsImage, carsImage.src, 'carTwo', [0, 150, 300], 1800, 400);
-carThree = new Car(carsImage, carsImage.src, 'carThree',[0, 150, 300], -200, 352);
-carFour = new Car(carsImage, carsImage.src, 'carFour',[0, 150, 300], -600, 270);
-carFive = new Car(carsImage, carsImage.src, 'carFive',[0, 150, 300], 400, 310);
-carSix = new Car(carsImage, carsImage.src, 'carTwo',[0, 150, 300], 120, 355);
+carOne = new Car(carsImage, carsImage.src, 'carOne', 200, 400);
+carTwo = new Car(carsImage, carsImage.src, 'carTwo', 1800, 400);
+carThree = new Car(carsImage, carsImage.src, 'carThree', -200, 352);
+carFour = new Car(carsImage, carsImage.src, 'carFour', -600, 270);
+carFive = new Car(carsImage, carsImage.src, 'carFive', 400, 310);
+carSix = new Car(carsImage, carsImage.src, 'carSix', 120, 355);
 
-const cars = [carOne, carTwo, carThree, carFour, carFive, carSix]
+const cars = [carOne, carTwo, carThree, carFour, carFive, carSix];
 
 var logsImage = new Image();
 logsImage.src = "logs.png";
@@ -63,17 +63,17 @@ class Log {
         this.sy = 10;
         this.swidth = 200;
         this.sheight = 60;
-        this.x = x
+        this.x = x;
         this.y = y;
         this.width = 200;
         this.height = 35;
-        }    
+    }
 }
 
 logOne = new Log(logsImage, logsImage.src, 'logOne', [0, 0, 0], 500, 40);
 logTwo = new Log(logsImage, logsImage.src, 'logTwo', [0, 0, 0], 300, 85);
-logThree = new Log(logsImage, logsImage.src, 'logThree',[0, 0, 0], 200, 130);
-logFour = new Log(logsImage, logsImage.src, 'logFour',[0, 0, 0], 200, 175);
+logThree = new Log(logsImage, logsImage.src, 'logThree', [0, 0, 0], 200, 130);
+logFour = new Log(logsImage, logsImage.src, 'logFour', [0, 0, 0], 200, 175);
 
 const logs = [logOne, logTwo, logThree, logFour];
 
@@ -156,13 +156,13 @@ function drawFrog() {
 function drawCars() {
     cars.forEach(car => {
         ctx.drawImage(car.image, car.sx, car.sy, car.swidth, car.sheight, car.x, car.y, car.width, car.height);
-        if (car.x < canvas.width + 100 ) {
-            car.x += 0.5;
-        } else { 
+        if (car.x < canvas.width + 100) {
+            car.x += 0.2;
+        } else {
             car.x = -100;
             let randomValue = Math.floor(Math.random() * car.sxArray.length);
             car.sx = car.sxArray[randomValue];
-            }
+        }
     })
 }
 
@@ -172,17 +172,17 @@ function drawLogs() {
         ctx.drawImage(log.image, log.sx, log.sy, log.swidth, log.sheight, log.x, log.y, log.width, log.height);
         direction < 0 ? direction = +0.1 : direction = -0.1;
         if (direction < 0) {
-            log.x >  - 200 ? log.x += direction : log.x = canvas.width + 100;
+            log.x > - 200 ? log.x += direction : log.x = canvas.width + 100;
         } else {
             log.x < canvas.width + 100 ? log.x += direction : log.x = -100;
         }
         // make the frog float on the logs
-        if (log.x <= x + width  &&
-                log.x + log.width >= x &&
-                log.y + log.height >= y &&
-                log.y <= y + height) {
-                    x = x + direction;
-                }
+        if (log.x <= x + width &&
+            log.x + log.width >= x &&
+            log.y + log.height >= y &&
+            log.y <= y + height) {
+            x = x + direction;
+        }
 
     })
 }
@@ -194,7 +194,9 @@ function moveFrog() {
         y = y - 44;
         up = false;
         sx = 0;
-        sy = 0;
+        sy = 10;
+        swidth = 55;
+        sheight = 46;
     }
     if (upPressed == false) {
         up = true;
@@ -203,7 +205,9 @@ function moveFrog() {
         y = y + 44;
         down = false;
         sx = 0;
-        sy = 0;        
+        sy = 10;
+        swidth = 55;
+        sheight = 46;
     }
     if (downPressed == false) {
         down = true;
@@ -212,6 +216,8 @@ function moveFrog() {
         x = x + 44;
         sx = 20;
         sy = 135;
+        swidth = 46;
+        sheight = 60;
         right = false;
     }
     if (rightPressed == false) {
@@ -221,6 +227,7 @@ function moveFrog() {
         x = x - 44;
         sx = 80;
         sy = 134;
+        sheight = 60;
         left = false;
     }
     if (leftPressed == false) {
@@ -229,15 +236,16 @@ function moveFrog() {
 }
 
 function runOver() {
-    cars.forEach( car => {
+    cars.forEach(car => {
         if (car.x <= x + width &&
             car.x + car.width >= x + (width / 1.5) &&
-            car.y + car.height >= y + (height/2) &&
-            car.y <= y + (height / 1.5) ) {
-                y = 435;
-            }
-        })
-} 
+            car.y + car.height >= y + (height / 2) &&
+            car.y <= y + (height / 1.5)) {
+            debugger
+            y = 435;
+        }
+    })
+}
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -246,7 +254,7 @@ function draw() {
     drawFrog();
     moveFrog();
     drawCars();
- 
+
     runOver();
     requestAnimationFrame(draw);
 }
