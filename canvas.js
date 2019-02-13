@@ -3,7 +3,7 @@ var ctx = canvas.getContext('2d');
 var lives = 5;
 
 const updateLives = () => {
-    lives === 1 ? (alert("GAME OVER!"), lives = 5): lives--;   
+    lives === 1 ? (alert("GAME OVER!"), lives = 5) : lives--;
 }
 
 var frog = new Image();
@@ -114,7 +114,7 @@ logFour = new Log(logsImage, logsImage.src, 'logFour', [0, 0, 0], 200, 185);
 
 var floatItems = [];
 const logs = [logOne, logTwo, logThree, logFour];
-logs.forEach( element => floatItems.push(element));
+logs.forEach(element => floatItems.push(element));
 
 var turtleImageToLeft = new Image();
 turtleImageToLeft.src = "turtlesToLeft.png";
@@ -144,7 +144,7 @@ turtleOne = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleOne', 23
 turtleTwo = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleTwo', 10, 235, 0, 92);
 
 const turtles = [turtleOne, turtleTwo];
-turtles.forEach( element => floatItems.push(element));
+turtles.forEach(element => floatItems.push(element));
 
 
 //the pad where the turtle has to jump on
@@ -176,8 +176,8 @@ padThree = new Pad(padImage, padImage.src, 'PadThree', 533, 59, 340, 0);
 padFour = new Pad(padImage, padImage.src, 'PadFour', 533, 59, 510, 0);
 // padThree 
 
-const pads= [padOne, padTwo, padThree, padFour];
-pads.forEach( element => floatItems.push(element));
+const pads = [padOne, padTwo, padThree, padFour];
+pads.forEach(element => floatItems.push(element));
 
 
 function keyDownHandler(e) {
@@ -271,7 +271,7 @@ function drawCars() {
 
 function drawLogs() {
     let direction = 1;
-    logs.forEach(log => {        
+    logs.forEach(log => {
         ctx.drawImage(log.image, log.sx, log.sy, log.swidth, log.sheight, log.x, log.y, log.width, log.height);
         direction < 0 ? direction = 0.3 : direction = -0.3;
         log.direction = direction;
@@ -279,14 +279,14 @@ function drawLogs() {
             log.x > - 200 ? log.x += direction : log.x = canvas.width + 100;
         } else {
             log.x < canvas.width + 100 ? log.x += direction : log.x = -100;
-            }      
         }
+    }
     )
 }
 
 function drawTurtles() {
     let direction = 1;
-    turtles.forEach(turtle => {        
+    turtles.forEach(turtle => {
         ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height);
         direction < 0 ? direction = 0.3 : direction = -0.3;
         turtle.direction = direction;
@@ -294,13 +294,13 @@ function drawTurtles() {
             turtle.x > - 200 ? turtle.x += direction : turtle.x = canvas.width + 100;
         } else {
             turtle.x < canvas.width + 100 ? turtle.x += direction : turtle.x = -100;
-            }      
         }
+    }
     )
 }
 
 function drawPads() {
-    pads.forEach(pad => {        
+    pads.forEach(pad => {
         ctx.drawImage(pad.image, pad.sx, pad.sy, pad.swidth, pad.sheight, pad.x, pad.y, pad.width, pad.height);
     }
     )
@@ -313,18 +313,19 @@ function frogFloat() {
             floatItem.x + floatItem.width >= x + width &&
             floatItem.y + floatItem.height >= y &&
             floatItem.y <= y + height) {
-            x = x + floatItem.direction; 
-            return floatItem.frogFloat = true;          
-            } else {
-                floatItem.frogFloat = false;
-            }
-})}
+            x = x + floatItem.direction;
+            return floatItem.frogFloat = true;
+        } else {
+            floatItem.frogFloat = false;
+        }
+    })
+}
 
 
 function drown() {
-    if ( logOne.frogFloat == false && 
-        logTwo.frogFloat == false && 
-        logThree.frogFloat == false && 
+    if (logOne.frogFloat == false &&
+        logTwo.frogFloat == false &&
+        logThree.frogFloat == false &&
         logFour.frogFloat == false &&
         turtleOne.frogFloat == false &&
         turtleTwo.frogFloat == false &&
@@ -332,11 +333,11 @@ function drown() {
         padTwo.frogFloat == false &&
         padThree.frogFloat == false &&
         padFour.frogFloat == false &&
-         y < 200) {
+        y < 200) {
         y = 445;
         lastY = 445;
         updateLives();
-        debugger;
+
     }
 }
 
@@ -344,19 +345,34 @@ function drown() {
 
 function moveFrog() {
     if (upPressed == true && up == true && y > 20) {
+
+        sy = 13;
+        sx = 58;
+        sheight = 55;
+        swidth = 55;
+        height = 55;
         y = lastY - 44;
         lastY = y;
         up = false;
-        setFrogStraight();
+
+        setTimeout(() => {
+            setFrogStraight();
+        }, 100);
     }
     if (upPressed == false) {
+        // sx = 2;
         up = true;
     }
     if (downPressed == true && down == true && y < canvas.height - 80) {
         y = lastY + 44;
         lastY = y;
         down = false;
-        setFrogStraight();
+        sx = 58;
+        sheight = 55;
+        height = 55;
+        setTimeout(() => {
+            setFrogStraight();
+        }, 100);
     }
     if (downPressed == false) {
         down = true;
@@ -386,7 +402,7 @@ function runOver() {
         if (car.x <= x + width &&
             car.x + car.width >= x + (width / 1.5) &&
             car.y + car.height >= y + (height / 2) &&
-            car.y <= y + (height / 1.5)) {            
+            car.y <= y + (height / 1.5)) {
             y = 445;
             lastY = 445;
             updateLives();
@@ -402,7 +418,7 @@ function draw() {
     drawTurtles()
     drawPads();
     moveFrog();
-    drawFrog(); 
+    drawFrog();
     frogFloat();
     drawCars();
     runOver();
