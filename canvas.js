@@ -146,6 +146,40 @@ turtleTwo = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleTwo', 
 const turtles = [turtleOne, turtleTwo];
 turtles.forEach( element => floatItems.push(element));
 
+
+//the pad where the turtle has to jump on
+var padImage = new Image();
+padImage.src = "frogger-images.png";
+
+class Pad {
+    constructor(image, imageSrc, name, sx, swidth, x, y) {
+        this.image = image;
+        this.imageSrc = imageSrc;
+        this.name = name;
+        this.sx = sx;
+        this.sxArray = [];
+        this.sy = 320;
+        this.swidth = swidth;
+        this.sheight = 90;
+        this.x = x;
+        this.y = y;
+        this.width = 60;
+        this.height = 55;
+        this.direction = 0;
+        this.frogFloat = false;
+    }
+}
+
+padOne = new Pad(padImage, padImage.src, 'PadOne', 533, 59, 0, 0);
+padTwo = new Pad(padImage, padImage.src, 'PadTwo', 533, 59, 170, 0);
+padThree = new Pad(padImage, padImage.src, 'PadThree', 533, 59, 340, 0);
+padFour = new Pad(padImage, padImage.src, 'PadFour', 533, 59, 510, 0);
+// padThree 
+
+const pads= [padOne, padTwo, padThree, padFour];
+pads.forEach( element => floatItems.push(element));
+
+
 function keyDownHandler(e) {
     switch (e.keyCode) {
         case 39:
@@ -265,6 +299,13 @@ function drawTurtles() {
     )
 }
 
+function drawPads() {
+    pads.forEach(pad => {        
+        ctx.drawImage(pad.image, pad.sx, pad.sy, pad.swidth, pad.sheight, pad.x, pad.y, pad.width, pad.height);
+    }
+    )
+}
+
 
 function frogFloat() {
     floatItems.forEach(floatItem => {
@@ -287,9 +328,13 @@ function drown() {
         logFour.frogFloat == false &&
         turtleOne.frogFloat == false &&
         turtleTwo.frogFloat == false &&
-         y < 200 && y > 40) {
-        y = 435;
-        lastY = 435;
+        padOne.frogFloat == false &&
+        padTwo.frogFloat == false &&
+        padThree.frogFloat == false &&
+        padFour.frogFloat == false &&
+         y < 200) {
+        y = 445;
+        lastY = 445;
         updateLives();
         debugger;
     }
@@ -342,21 +387,20 @@ function runOver() {
             car.x + car.width >= x + (width / 1.5) &&
             car.y + car.height >= y + (height / 2) &&
             car.y <= y + (height / 1.5)) {            
-            y = 435;
-            lastY = 435;
+            y = 445;
+            lastY = 445;
             updateLives();
             debugger;
         }
     })
 }
 
-
-
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
     drawLogs();
     drawTurtles()
+    drawPads();
     moveFrog();
     drawFrog(); 
     frogFloat();
