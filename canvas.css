@@ -3,8 +3,32 @@ body {
     background: yellow;
     display: flex;
     justify-content: center;
+    padding: 2%;
+    font-family: 'Oldenburg', cursive;
+    font-size: 1.5rem;
+    color: white;
 }
 
+.game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* .lives, .score {
+
+} */
+
+
+.game-result {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 2% 0%;
+    background: black;
+    border-style: dashed;
+    border-color: grey;
+    padding: 2% 0;
+}
 canvas {
     background: black;
 }

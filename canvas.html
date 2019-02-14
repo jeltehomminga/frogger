@@ -4,11 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Canvas playground</title>
+    <link href="https://fonts.googleapis.com/css?family=Oldenburg" rel="stylesheet">
+    <title>Frogger</title>
     <link type="text/css" rel="stylesheet" href="./canvas.css"/>
     </head>
 <body>
-    <canvas id="canvas" width="570" height="540"></canvas>
-    <script src="./canvas.js"></script>
+    <div class="game-container">
+        <div class="game-result">
+            <div class="score">Score: <span id="score"></span></div>
+            <div class="lives">Lives: <span id="lives"></span></div>
+        </div>
+        <div class="game-screen">
+            <canvas id="canvas" width="570" height="540"></canvas>
+            <script src="./canvas.js"></script>
+        </div>
+    </div>
 </body>
 </html>

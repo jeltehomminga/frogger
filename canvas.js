@@ -1,14 +1,32 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+var scoreHtml = document.getElementById('score');
+var livesHtml = document.getElementById('lives');
 var lives = 5;
+var score = 0;
+var rightPressed = false;
+var leftPressed = false;
+var upPressed = false;
+var downPressed = false;
+var up = true;
+var down = true;
+var right = true;
+var left = true;
+var level = 1;
+var floatSpeed = 0.3;
+var carSpeed = 1;
+var scoreIncrement = 10;
+var logs = [];
+var pads = [];
+var turtles = [];
+var floatItems = [];
+var cars = [];
+livesHtml.innerHTML = lives;
+scoreHtml.innerHTML = score;
 
-const updateLives = () => {
-    lives === 1 ? (alert("GAME OVER!"), lives = 5) : lives--;
-}
-
+//Our main character, the frog
 var frog = new Image();
 frog.src = "frogs.png";
-
 var sx = 2;
 var sy = 13;
 var swidth = 55;
@@ -19,72 +37,44 @@ var width = 52;
 var height = 28;
 var lastY = 445;
 
-const setFrogStraight = () => {
-    sx = 2;
-    sy = 13;
-    swidth = 55;
-    sheight = 35;
-    width = 52;
-    height = 28;
-}
 
-const setFrogRight = () => {
-    sx = 32;
-    sy = 143;
-    swidth = 35;
-    sheight = 55;
-    width = 28;
-    height = 45;
-}
+//turtles where the frog can jump on
+const turtleImageToLeft = new Image();
+turtleImageToLeft.src = "turtlesToLeft.png";
+const turtleImageToRight = new Image();
+turtleImageToRight.src = "turtles.png";
 
-const setFrogLeft = () => {
-    sx = 88;
-    sy = 140;
-    swidth = 35;
-    sheight = 53;
-    width = 28;
-    height = 45;
-}
-
-
-var rightPressed = false;
-var leftPressed = false;
-var upPressed = false;
-var downPressed = false;
-var up = true;
-var down = true;
-var right = true;
-var left = true;
-
-var carsImage = new Image();
-carsImage.src = "cars.png";
-
-class Car {
-    constructor(image, imageSrc, name, x, y) {
+class Turtle {
+    constructor(image, imageSrc, name, sx, swidth, x, y) {
         this.image = image;
         this.imageSrc = imageSrc;
         this.name = name;
-        this.sxArray = [15, 160, 305];
-        this.sx = this.sxArray[Math.floor(Math.random() * this.sxArray.length)]
-        this.sy = 99;
-        this.swidth = 127;
-        this.sheight = 60;
-        this.x = x
+        this.sx = sx;
+        this.sxArray = [];
+        this.sy = 8;
+        this.swidth = swidth;
+        this.sheight = 100;
+        this.x = x;
         this.y = y;
-        this.width = 75;
-        this.height = 30;
+        this.width = 180;
+        this.height = 55;
+        this.direction = 0;
+        this.frogFloat = false;
     }
 }
 
-carOne = new Car(carsImage, carsImage.src, 'carOne', 200, 400);
-carTwo = new Car(carsImage, carsImage.src, 'carTwo', 1800, 400);
-carThree = new Car(carsImage, carsImage.src, 'carThree', -200, 352);
-carFour = new Car(carsImage, carsImage.src, 'carFour', -600, 270);
-carFive = new Car(carsImage, carsImage.src, 'carFive', 400, 310);
-carSix = new Car(carsImage, carsImage.src, 'carSix', 120, 355);
+const createTurtles = () => {
+    turtleOne = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleOne', 230, 220, 200, 52);
+    turtleTwo = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleTwo', 10, 235, 0, 95);
+    turtleThree = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleThree', 230, 220, -100, 140);
+    turtleFour = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleFour', 10, 235, -100, 180);
+    const turtles = [turtleOne, turtleTwo, turtleThree, turtleFour];
+    turtles.forEach(element => floatItems.push(element));   
+}
 
-const cars = [carOne, carTwo, carThree, carFour, carFive, carSix];
+createTurtles();
 
+//the logs in the water
 var logsImage = new Image();
 logsImage.src = "logs.png";
 
@@ -107,47 +97,18 @@ class Log {
     }
 }
 
-logOne = new Log(logsImage, logsImage.src, 'logOne', [0, 0, 0], 500, 55);
-logTwo = new Log(logsImage, logsImage.src, 'logTwo', [0, 0, 0], 300, 100);
-logThree = new Log(logsImage, logsImage.src, 'logThree', [0, 0, 0], 200, 145);
-logFour = new Log(logsImage, logsImage.src, 'logFour', [0, 0, 0], 200, 185);
-
-var floatItems = [];
-const logs = [logOne, logTwo, logThree, logFour];
-logs.forEach(element => floatItems.push(element));
-
-var turtleImageToLeft = new Image();
-turtleImageToLeft.src = "turtlesToLeft.png";
-var turtleImageToRight = new Image();
-turtleImageToRight.src = "turtles.png";
-
-class Turtle {
-    constructor(image, imageSrc, name, sx, swidth, x, y) {
-        this.image = image;
-        this.imageSrc = imageSrc;
-        this.name = name;
-        this.sx = sx;
-        this.sxArray = [];
-        this.sy = 8;
-        this.swidth = swidth;
-        this.sheight = 100;
-        this.x = x;
-        this.y = y;
-        this.width = 180;
-        this.height = 55;
-        this.direction = 0;
-        this.frogFloat = false;
-    }
+const createLogs = () => {
+    logOne = new Log(logsImage, logsImage.src, 'logOne', [0, 0, 0], 500, 55);
+    logTwo = new Log(logsImage, logsImage.src, 'logTwo', [0, 0, 0], 300, 100);
+    logThree = new Log(logsImage, logsImage.src, 'logThree', [0, 0, 0], 200, 142);
+    logFour = new Log(logsImage, logsImage.src, 'logFour', [0, 0, 0], 200, 183);
+    logs = [logOne, logTwo, logThree, logFour];
+    logs.forEach(element => floatItems.push(element));
 }
 
-turtleOne = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleOne', 230, 220, 200, 48);
-turtleTwo = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleTwo', 10, 235, 0, 92);
+createLogs();
 
-const turtles = [turtleOne, turtleTwo];
-turtles.forEach(element => floatItems.push(element));
-
-
-//the pad where the turtle has to jump on
+//the pads where the turtle can jump on
 var padImage = new Image();
 padImage.src = "frogger-images.png";
 
@@ -167,18 +128,94 @@ class Pad {
         this.height = 55;
         this.direction = 0;
         this.frogFloat = false;
+        this.type = 'pad';
+        this.newFrog = false;
     }
 }
 
-padOne = new Pad(padImage, padImage.src, 'PadOne', 533, 59, 0, 0);
-padTwo = new Pad(padImage, padImage.src, 'PadTwo', 533, 59, 170, 0);
-padThree = new Pad(padImage, padImage.src, 'PadThree', 533, 59, 340, 0);
-padFour = new Pad(padImage, padImage.src, 'PadFour', 533, 59, 510, 0);
-// padThree 
+const createPads = () => {
+    padOne = new Pad(padImage, padImage.src, 'PadOne', 533, 59, 30, 0);
+    padTwo = new Pad(padImage, padImage.src, 'PadTwo', 533, 59, 180, 0);
+    padThree = new Pad(padImage, padImage.src, 'PadThree', 533, 59, 335, 0);
+    padFour = new Pad(padImage, padImage.src, 'PadFour', 533, 59, 475, 0);
+    pads = [padOne, padTwo, padThree, padFour];
+    pads.forEach(element => floatItems.push(element));
+}
 
-const pads = [padOne, padTwo, padThree, padFour];
-pads.forEach(element => floatItems.push(element));
+createPads();
 
+//cars on the road
+var carsImage = new Image();
+carsImage.src = "cars.png";
+
+class Car {
+    constructor(image, imageSrc, name, x, y) {
+        this.image = image;
+        this.imageSrc = imageSrc;
+        this.name = name;
+        this.sxArray = [15, 160, 305];
+        this.sx = this.sxArray[Math.floor(Math.random() * this.sxArray.length)]
+        this.sy = 99;
+        this.swidth = 127;
+        this.sheight = 60;
+        this.x = x
+        this.y = y;
+        this.width = 75;
+        this.height = 30;
+    }
+}
+
+const createCars = () => {
+    carOne = new Car(carsImage, carsImage.src, 'carOne', 200, 400);
+    carTwo = new Car(carsImage, carsImage.src, 'carTwo', 1800, 400);
+    carThree = new Car(carsImage, carsImage.src, 'carThree', -200, 352);
+    carFour = new Car(carsImage, carsImage.src, 'carFour', -600, 270);
+    carFive = new Car(carsImage, carsImage.src, 'carFive', 400, 310);
+    carSix = new Car(carsImage, carsImage.src, 'carSix', 120, 355);
+    cars = [carOne, carTwo, carThree, carFour, carFive, carSix];
+}
+
+createCars();
+
+//update lives when frog is drown or runover
+const updateLives = () => {
+    lives--
+    livesHtml.innerHTML = lives;
+    lives === 0 ? (alert("GAME OVER!"), lives = 5) : "";    
+}
+
+//check if all pads have a frog on them
+const checkPadsFull = () => {
+    const isTrue = currentValue => currentValue === true;
+    let padsFullArray = [];
+    pads.forEach(element => padsFullArray.push(element.frogFloat))
+    padsFullArray.every(isTrue) ? newGame() : "";
+}
+
+//update score if for reaches a pad
+const updateScore = () => {
+    score += scoreIncrement * level;
+    scoreHtml.innerHTML = score;
+    checkPadsFull();
+}
+
+//start new game when no lives left or end of level is reached
+const newGame = () => {
+    floatItems.forEach(element =>{
+        element.frogFloat = false;
+        if (element.type = 'pad') {
+            element.newFrog = false;
+        }
+    })
+    y = 445;
+    lastY = 445;
+    lives = 5;
+    livesHtml.innerHTML = lives;
+    scoreHtml.innerHTML = score;
+    floatSpeed += 0.1;
+    carSpeed += 0.2;
+    level ++;
+}
 
 function keyDownHandler(e) {
     switch (e.keyCode) {
@@ -196,6 +233,7 @@ function keyDownHandler(e) {
             break;
     }
 }
+
 function keyUpHandler(e) {
     switch (e.keyCode) {
         case 39:
@@ -216,6 +254,7 @@ function keyUpHandler(e) {
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 
+//draw background and all of the items
 function drawBackground() {
     // two strips of grass
     ctx.fillStyle = "lime";
@@ -260,7 +299,7 @@ function drawCars() {
     cars.forEach(car => {
         ctx.drawImage(car.image, car.sx, car.sy, car.swidth, car.sheight, car.x, car.y, car.width, car.height);
         if (car.x < canvas.width + 100) {
-            car.x += 0.2;
+            car.x += 1;
         } else {
             car.x = -100;
             let randomValue = Math.floor(Math.random() * car.sxArray.length);
@@ -270,10 +309,10 @@ function drawCars() {
 }
 
 function drawLogs() {
-    let direction = 1;
+    let direction = floatSpeed;
     logs.forEach(log => {
         ctx.drawImage(log.image, log.sx, log.sy, log.swidth, log.sheight, log.x, log.y, log.width, log.height);
-        direction < 0 ? direction = 0.3 : direction = -0.3;
+        direction < 0 ? direction = floatSpeed: direction = -floatSpeed;
         log.direction = direction;
         if (direction < 0) {
             log.x > - 200 ? log.x += direction : log.x = canvas.width + 100;
@@ -288,7 +327,7 @@ function drawTurtles() {
     let direction = 1;
     turtles.forEach(turtle => {
         ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height);
-        direction < 0 ? direction = 0.3 : direction = -0.3;
+        direction < 0 ? direction = floatSpeed : direction = -floatSpeed;
         turtle.direction = direction;
         if (direction < 0) {
             turtle.x > - 200 ? turtle.x += direction : turtle.x = canvas.width + 100;
@@ -306,22 +345,42 @@ function drawPads() {
     )
 }
 
-
+//check if the frog is on a floatitem or will drown
 function frogFloat() {
     floatItems.forEach(floatItem => {
         if (floatItem.x <= x &&
             floatItem.x + floatItem.width >= x + width &&
-            floatItem.y + floatItem.height >= y &&
+            floatItem.y + ( floatItem.height / 2 ) >= y &&
             floatItem.y <= y + height) {
             x = x + floatItem.direction;
-            return floatItem.frogFloat = true;
+            floatItem.frogFloat = true;
+            frogOnPad();
         } else {
-            floatItem.frogFloat = false;
+            floatItem.type !== 'pad' ? floatItem.frogFloat = false: "";
+            frogOnPad();
         }
     })
 }
 
+//when frog reaches the pad leave frog on pad and draw new frog
+function frogOnPad() {
+        pads.forEach(pad => {
+        if (pad.frogFloat === true) {
+        ctx.drawImage(frog, 2, 13, 55, 35, pad.x, pad.y + 10, 52, 28);
+        if (pad.newFrog === false) {
+            y = 445;
+            lastY = 445;
+            pad.newFrog = true;
+            setTimeout(()=> {
+                updateScore();
+            })
+        } 
+       } 
+    })
+}
 
+//check if frog is drown 
+// when frog is not on a floatitem, but in the water area
 function drown() {
     if (logOne.frogFloat == false &&
         logTwo.frogFloat == false &&
@@ -329,72 +388,110 @@ function drown() {
         logFour.frogFloat == false &&
         turtleOne.frogFloat == false &&
         turtleTwo.frogFloat == false &&
-        padOne.frogFloat == false &&
-        padTwo.frogFloat == false &&
-        padThree.frogFloat == false &&
-        padFour.frogFloat == false &&
+        turtleThree.frogFloat == false &&
+        turtleFour.frogFloat == false &&
         y < 200) {
         y = 445;
         lastY = 445;
         updateLives();
-
     }
 }
 
+// frog movement
+//set the frog position back
+const setFrogStraight = () => {
+    sx = 2;
+    sy = 13;
+    swidth = 55;
+    sheight = 35;
+    width = 45;
+    height = 28;
+}
 
+const setFrogRight = () => {
+    sx = 32;
+    sy = 143;
+    swidth = 35;
+    sheight = 55;
+    width = 28;
+    height = 45;
+}
 
+const setFrogLeft = () => {
+    sx = 88;
+    sy = 140;
+    swidth = 35;
+    sheight = 53;
+    width = 28;
+    height = 45;
+}
+
+//frog jump movement
+const frogJumpUpDown = () => {
+    sy = 13;
+    sx = 58;
+    sheight = 55;
+    swidth = 55;
+    height = 50;
+    width = 40;
+}
+
+const frogJumpRight = () => {
+    sx = 20;
+    sy = 196;
+    swidth = 55;
+    sheight = 55;
+    width = 48;
+    height = 40;
+}
+
+const frogJumpLeft = () => {
+    sx = 88;
+    sy = 196;
+    swidth = 55;
+    sheight = 55;
+    width = 48;
+    height = 40;
+}
+
+//on the keys up and down make the frog move
 function moveFrog() {
     if (upPressed == true && up == true && y > 20) {
-
-        sy = 13;
-        sx = 58;
-        sheight = 55;
-        swidth = 55;
-        height = 55;
+        frogJumpUpDown();
+        setTimeout(() => {
+            setFrogStraight();
+        }, 100);
         y = lastY - 44;
         lastY = y;
         up = false;
-
+    } upPressed == false ?  up = true : up = false;
+    if (downPressed == true && down == true && y < canvas.height - 80) {
+        frogJumpUpDown();
         setTimeout(() => {
             setFrogStraight();
         }, 100);
-    }
-    if (upPressed == false) {
-        // sx = 2;
-        up = true;
-    }
-    if (downPressed == true && down == true && y < canvas.height - 80) {
         y = lastY + 44;
         lastY = y;
         down = false;
-        sx = 58;
-        sheight = 55;
-        height = 55;
-        setTimeout(() => {
-            setFrogStraight();
-        }, 100);
-    }
-    if (downPressed == false) {
-        down = true;
-    }
+    } downPressed == false ? down = true : down = false;
     if (rightPressed == true && right == true && x + width < canvas.width) {
+        frogJumpRight();
+        setTimeout(() => {
+            setFrogRight();
+        }, 100)
         x = x + 44;
         y = lastY - 2;
-        right = false;
-        setFrogRight();
-    }
-    if (rightPressed == false) {
-        right = true;
-    }
+        right = false;        
+    } rightPressed == false ? right = true : right = false;
     if (leftPressed == true && left == true && x > 0) {
+        frogJumpLeft()
+        setTimeout(() => {
+            setFrogLeft();
+        }, 100)
         x = x - 44;
         y = lastY - 2;
-        left = false;
-        setFrogLeft();
-    }
-    if (leftPressed == false) {
-        left = true;
-    }
+        left = false;        
+    } leftPressed == false ? left = true : false;
 }
 
 function runOver() {
@@ -406,7 +503,6 @@ function runOver() {
             y = 445;
             lastY = 445;
             updateLives();
-            debugger;
         }
     })
 }
