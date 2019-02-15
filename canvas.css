@@ -13,12 +13,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
-/* .lives, .score {
-
-} */
-
-
 .game-result {
     display: flex;
     flex-direction: row;
