@@ -377,14 +377,14 @@ const drawTurtles = () => {
                  }, 1500)
                 setTimeout(() => {
                     turtle.turtleSink = true;                      
-                }, 3500)
+                }, 2000)
                 setTimeout(() => {
                     turtle.turtleSink = false;
                     turtle.sx = 7;                      
-                }, 5000)
+                }, 3000)
                 setTimeout(() => {
-                    turtle.sx = 230;                      
-                }, 8000)
+                    turtle.sx = 230;                 
+                }, 4500)
 
             } else if (turtle.frogFloat === true && turtle.image === turtleImageToRight){
                 setTimeout(() => {
@@ -392,14 +392,14 @@ const drawTurtles = () => {
                  }, 1500)
                 setTimeout(() => {
                     turtle.turtleSink = true;                      
-                }, 3500)
+                }, 2000)
                 setTimeout(() => {
                     turtle.turtleSink = false;
                     turtle.sx = 550;                       
-                }, 5000)
+                }, 3000)
                 setTimeout(() => {
-                    turtle.sx = 10;                      
-                }, 8000)                               
+                    turtle.sx = 10;                 
+                }, 4500)                               
             }
         }
     }
@@ -445,9 +445,7 @@ const frogOnPad = () => {
                 y = 445;
                 lastY = 445;
                 pad.newFrog = true;
-                setTimeout(() => {
-                    updateScore();
-                })
+                updateScore();
             }
         }
     })
