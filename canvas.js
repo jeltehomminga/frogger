@@ -363,7 +363,7 @@ const drawTurtles = () => {
     let movement = 0;
     turtles.forEach(turtle => {
         if (turtle.turtleSink === false) {
-            ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height);
+            ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height)};
             turtle.floatLeft === false ? movement = floatSpeed : movement = -floatSpeed;
             turtle.movement = movement;
             if (turtle.floatLeft === true) {
@@ -377,14 +377,14 @@ const drawTurtles = () => {
                  }, 1500)
                 setTimeout(() => {
                     turtle.turtleSink = true;                      
-                }, 2000)
+                }, 3000)
                 setTimeout(() => {
                     turtle.turtleSink = false;
                     turtle.sx = 7;                      
-                }, 3000)
+                }, 4000)
                 setTimeout(() => {
                     turtle.sx = 230;                 
-                }, 4500)
+                }, 5500)
 
             } else if (turtle.frogFloat === true && turtle.image === turtleImageToRight){
                 setTimeout(() => {
@@ -392,15 +392,15 @@ const drawTurtles = () => {
                  }, 1500)
                 setTimeout(() => {
                     turtle.turtleSink = true;                      
-                }, 2000)
+                }, 3000)
                 setTimeout(() => {
                     turtle.turtleSink = false;
                     turtle.sx = 550;                       
-                }, 3000)
+                }, 4000)
                 setTimeout(() => {
                     turtle.sx = 10;                 
-                }, 4500)                               
-            }
+                }, 5500)                               
+            
         }
     }
     )
@@ -445,7 +445,10 @@ const frogOnPad = () => {
                 y = 445;
                 lastY = 445;
                 pad.newFrog = true;
-                updateScore();
+                setTimeout(() => {
+                    updateScore();
+                }, 1000)
+                
             }
         }
     })
