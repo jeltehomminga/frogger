@@ -22,6 +22,7 @@ var pads = [];
 var turtles = [];
 var floatItems = [];
 var cars = [];
+
 livesHtml.innerHTML = lives;
 scoreHtml.innerHTML = score;
 levelHtml.innerHTML = level;
@@ -55,7 +56,7 @@ const turtleImageToRight = new Image();
 turtleImageToRight.src = "turtles.png";
 
 class Turtle {
-    constructor(image, imageSrc, name, sx, swidth, x, y) {
+    constructor(image, imageSrc, name, sx, swidth, x, y, floatLeft) {
         this.image = image;
         this.imageSrc = imageSrc;
         this.name = name;
@@ -68,16 +69,18 @@ class Turtle {
         this.y = y;
         this.width = 180;
         this.height = 55;
-        this.direction = 0;
+        this.movement = 0;
         this.frogFloat = false;
+        this.floatLeft = floatLeft;
+        this.turtleSink = false;
     }
 }
 
 const createTurtles = () => {
-    turtleOne = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleOne', 230, 220, 200, 52);
-    turtleTwo = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleTwo', 10, 235, 0, 95);
-    turtleThree = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleThree', 230, 220, -100, 140);
-    turtleFour = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleFour', 10, 235, -100, 180);
+    turtleOne = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleOne', 230, 220, 200, 52, true);
+    turtleTwo = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleTwo', 10, 235, 0, 95, false);
+    turtleThree = new Turtle(turtleImageToLeft, turtleImageToLeft.src, 'TurtleThree', 230, 220, -100, 140, true);
+    turtleFour = new Turtle(turtleImageToRight, turtleImageToRight.src, 'TurtleFour', 10, 235, -100, 180, false);
     turtles = [turtleOne, turtleTwo, turtleThree, turtleFour];
     turtles.forEach(element => floatItems.push(element));
 }
@@ -89,7 +92,7 @@ var logsImage = new Image();
 logsImage.src = "logs.png";
 
 class Log {
-    constructor(image, imageSrc, name, sxArray, x, y) {
+    constructor(image, imageSrc, name, sxArray, x, y, floatLeft) {
         this.image = image;
         this.imageSrc = imageSrc;
         this.name = name;
@@ -102,16 +105,17 @@ class Log {
         this.y = y;
         this.width = 200;
         this.height = 30;
-        this.direction = 0;
+        this.movement = 0;
+        this.floatLeft = floatLeft;
         this.frogFloat = false;
     }
 }
 
 const createLogs = () => {
-    logOne = new Log(logsImage, logsImage.src, 'logOne', [0, 0, 0], 500, 55);
-    logTwo = new Log(logsImage, logsImage.src, 'logTwo', [0, 0, 0], 300, 100);
-    logThree = new Log(logsImage, logsImage.src, 'logThree', [0, 0, 0], 200, 142);
-    logFour = new Log(logsImage, logsImage.src, 'logFour', [0, 0, 0], 200, 183);
+    logOne = new Log(logsImage, logsImage.src, 'logOne', [0, 0, 0], 500, 55, true);
+    logTwo = new Log(logsImage, logsImage.src, 'logTwo', [0, 0, 0], 300, 100, false);
+    logThree = new Log(logsImage, logsImage.src, 'logThree', [0, 0, 0], 200, 142, true);
+    logFour = new Log(logsImage, logsImage.src, 'logFour', [0, 0, 0], 200, 183, false);
     logs = [logOne, logTwo, logThree, logFour];
     logs.forEach(element => floatItems.push(element));
 }
@@ -136,7 +140,7 @@ class Pad {
         this.y = y;
         this.width = 60;
         this.height = 55;
-        this.direction = 0;
+        // this.direction = 0;
         this.frogFloat = false;
         this.type = 'pad';
         this.newFrog = false;
@@ -336,30 +340,62 @@ function drawCars() {
 }
 
 function drawLogs() {
-    let direction = floatSpeed;
+    let movement = 0;
     logs.forEach(log => {
         ctx.drawImage(log.image, log.sx, log.sy, log.swidth, log.sheight, log.x, log.y, log.width, log.height);
-        direction < 0 ? direction = floatSpeed : direction = -floatSpeed;
-        log.direction = direction;
-        if (direction < 0) {
-            log.x > - 200 ? log.x += direction : log.x = canvas.width + 100;
+        log.floatLeft === true  ? movement = -floatSpeed : movement = floatSpeed;
+        log.movement = movement;
+        if (log.floatLeft === true) {
+            log.x > - 200 ? log.x += movement : log.x = canvas.width + 100;
         } else {
-            log.x < canvas.width + 100 ? log.x += direction : log.x = -100;
+            log.x < canvas.width + 100 ? log.x += movement : log.x = -100;
         }
     }
     )
 }
 
-function drawTurtles() {
-    let direction = 1;
+const drawTurtles = () => {
+    let movement = 0;
     turtles.forEach(turtle => {
-        ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height);
-        direction < 0 ? direction = floatSpeed : direction = -floatSpeed;
-        turtle.direction = direction;
-        if (direction < 0) {
-            turtle.x > - 200 ? turtle.x += direction : turtle.x = canvas.width + 100;
-        } else {
-            turtle.x < canvas.width + 100 ? turtle.x += direction : turtle.x = -100;
+        if (turtle.turtleSink === false) {
+            ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height);
+            turtle.floatLeft === false ? movement = floatSpeed : movement = -floatSpeed;
+            turtle.movement = movement;
+            if (turtle.floatLeft === true) {
+                turtle.x > - 200 ? turtle.x += movement : turtle.x = canvas.width + 100;
+            } else {
+                turtle.x < canvas.width + 100 ? turtle.x += movement : turtle.x = -100;
+            }    
+            if (turtle.frogFloat === true && turtle.image === turtleImageToLeft ){
+                setTimeout(() => {
+                    turtle.sx = 7; 
+                 }, 1500)
+                setTimeout(() => {
+                    turtle.turtleSink = true;                      
+                }, 3500)
+                setTimeout(() => {
+                    turtle.turtleSink = false;
+                    turtle.sx = 7;                      
+                }, 5000)
+                setTimeout(() => {
+                    turtle.sx = 230;                      
+                }, 8000)
+
+            } else if (turtle.frogFloat === true && turtle.image === turtleImageToRight){
+                setTimeout(() => {
+                    turtle.sx = 550; 
+                 }, 1500)
+                setTimeout(() => {
+                    turtle.turtleSink = true;                      
+                }, 3500)
+                setTimeout(() => {
+                    turtle.turtleSink = false;
+                    turtle.sx = 550;                       
+                }, 5000)
+                setTimeout(() => {
+                    turtle.sx = 10;                      
+                }, 8000)                               
+            }
         }
     }
     )
@@ -379,10 +415,15 @@ const frogFloat = () => {
             floatItem.x <= x + (width / 2) &&
             floatItem.x + floatItem.width >= x + (width / 2) &&
             floatItem.y + (floatItem.height / 2) >= y &&
-            floatItem.y <= y + height) {
-            x = x + floatItem.direction;
-            floatItem.frogFloat = true;
-            frogOnPad();
+            floatItem.y <= y + height) {        
+            if (floatItem.turtleSink) {
+                floatItem.turtleSink === true ? floatItem.frogFloat = false : (floatItem.frogFloat = true, x = x + floatItem.movement);
+                x = x + floatItem.movement;
+            } else {
+                floatItem.frogFloat = true
+                x = x + floatItem.movement; 
+                frogOnPad();
+            }           
         } else {
             floatItem.type !== 'pad' ? floatItem.frogFloat = false : "";
             frogOnPad();
@@ -407,6 +448,8 @@ const frogOnPad = () => {
     })
 }
 
+
+
 //check if frog is drown 
 // when frog is not on a floatitem, but in the water area
 function drown() {
@@ -418,6 +461,10 @@ function drown() {
         turtleTwo.frogFloat == false &&
         turtleThree.frogFloat == false &&
         turtleFour.frogFloat == false &&
+        padOne.frogFloat == false &&
+        padTwo.frogFloat == false &&
+        padThree.frogFloat == false &&
+        padFour.frogFloat == false &&
         y < 200) {
         deadReason = "drown";
         drownX = x;
