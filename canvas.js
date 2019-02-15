@@ -196,7 +196,13 @@ createCars();
 const updateLives = () => {
     lives--
     livesHtml.innerHTML = lives;
-    lives === 0 ? (alert("GAME OVER!"), lives = 5, level = 0) : "";
+        if (lives === 0) {
+        lives = 5;
+        level = 0;
+        livesHtml.innerHTML = lives;
+        scoreHtml.innerHTML = score;
+        alert("GAME OVER!");
+    }
 }
 
 //check if all pads have a frog on them
@@ -231,7 +237,6 @@ const newGame = () => {
     levelHtml.innerHTML = level;
     floatSpeed += 0.1;
     carSpeed += 0.2;
-
 }
 
 function keyDownHandler(e) {
@@ -447,7 +452,6 @@ const frogOnPad = () => {
         }
     })
 }
-
 
 
 //check if frog is drown 
