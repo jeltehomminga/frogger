@@ -140,7 +140,7 @@ class Pad {
         this.y = y;
         this.width = 60;
         this.height = 55;
-        // this.direction = 0;
+        this.movement = 0;
         this.frogFloat = false;
         this.type = 'pad';
         this.newFrog = false;
@@ -461,10 +461,6 @@ function drown() {
         turtleTwo.frogFloat == false &&
         turtleThree.frogFloat == false &&
         turtleFour.frogFloat == false &&
-        padOne.frogFloat == false &&
-        padTwo.frogFloat == false &&
-        padThree.frogFloat == false &&
-        padFour.frogFloat == false &&
         y < 200) {
         deadReason = "drown";
         drownX = x;
