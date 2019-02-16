@@ -3,7 +3,7 @@ body {
     background: yellow;
     display: flex;
     justify-content: center;
-    padding: 2%;
+    /* padding: 2%; */
     font-family: 'Oldenburg', cursive;
     font-size: 1.5rem;
     color: white;
@@ -12,18 +12,72 @@ body {
 .game-container {
     display: flex;
     flex-direction: column;
+    width: min-content;
+    /* max-width: 90%; */
 }
+
 .game-result {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 2% 0%;
+    /* margin: 2% 0%; */
     background: black;
     border-style: dashed;
     border-color: grey;
-    padding: 2% 0;
+    /* padding: 2% 0; */
 }
 canvas {
     background: black;
+    /* max-width: 90%; */
 }
 
+.controlscontainer {
+    width: 50%;
+    margin-right: 10%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    text-align: center;
+  }
+  
+  .control {
+    width: 55px;
+    background-color: lightslategrey;
+    border-radius: 10px;
+  }
+
+  td {
+    width: 65px;
+    height: 45px;
+    position: relative;
+    margin: 0;
+    border: groove burlywood;
+    background-color: rgba(32, 122, 138, 0.6);
+  }
+  
+  
+  i {
+    font-size: 30px;
+    color: purple;
+  }
+  
+  .hidden {
+    visibility: hidden;
+  }
+  
+  table {
+    margin: 0 auto;
+    margin-top: 3%;
+  }
+
+@media only screen and (max-width: 700px) {
+
+    .game-container {
+        display: flex;
+        flex-direction: column;
+        max-width: 90%;
+    }
+
+
+  }

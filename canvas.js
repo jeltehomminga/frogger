@@ -1,20 +1,14 @@
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const scoreHtml = document.getElementById('score');
 const livesHtml = document.getElementById('lives');
 const levelHtml = document.getElementById('level');
+
 var lives = 5;
 var score = 0;
-var rightPressed = false;
-var leftPressed = false;
-var upPressed = false;
-var downPressed = false;
-var up = true;
-var down = true;
-var right = true;
-var left = true;
 var level = 1;
-var floatSpeed = 0.3;
+var floatSpeed = 0.1;
 var carSpeed = 1;
 var scoreIncrement = 10;
 var logs = [];
@@ -27,27 +21,26 @@ livesHtml.innerHTML = lives;
 scoreHtml.innerHTML = score;
 levelHtml.innerHTML = level;
 
-//Our main character, the frog
-var frog = new Image();
-frog.src = "frogs.png";
-var sx = 2;
-var sy = 13;
-var swidth = 55;
-var sheight = 35;
-var x = 30;
-var y = 445;
-var width = 52;
-var height = 28;
-var lastY = 445;
-var deadReason = undefined;
 
-//The drown frog
-var drownX = 30;
-var drownY = 445;
+var frogImage = new Image();
+frogImage.src = "frogs.png";
+const frog = {
+    image: frogImage,
+    imageSrc: frogImage.src,
+    sx: 2,
+    sy: 13,
+    swidth: 55,
+    sheight: 35,
+    x: 30,
+    y: 445,
+    width: 52,
+    height: 28,
+    lastY: 445,
+    deadX: 30,
+    deadY: 445,
+    deadReason: undefined
+}
 
-//The run over frog
-var runOverX = 30;
-var runOverY = 445;
 
 //turtles where the frog can jump on
 const turtleImageToLeft = new Image();
@@ -71,7 +64,9 @@ class Turtle {
         this.height = 55;
         this.movement = 0;
         this.frogFloat = false;
+        this.type = 'turtle';
         this.floatLeft = floatLeft;
+        this.underWater = false;
         this.turtleSink = false;
     }
 }
@@ -108,6 +103,8 @@ class Log {
         this.movement = 0;
         this.floatLeft = floatLeft;
         this.frogFloat = false;
+        this.type = 'log';
+        this.underWater = false;
     }
 }
 
@@ -144,6 +141,7 @@ class Pad {
         this.frogFloat = false;
         this.type = 'pad';
         this.newFrog = false;
+        this.underWater = false;
     }
 }
 
@@ -191,18 +189,189 @@ const createCars = () => {
 
 createCars();
 
+const gameControls = {
+    leftPressed: false,
+    upPressed: false,
+    downPressed: false,
+    up: true,
+    down: true,
+    right: true,
+    left: true,
+    rightPressed: false
+}
+
+let upControl = document.getElementById("upcontrol");
+let rightControl = document.getElementById("rightcontrol");
+let leftControl = document.getElementById("leftcontrol");
+let downControl = document.getElementById("downcontrol");
+
+
+// control by mouseclick
+upControl.onclick = () => {
+    gameControls.upPressed = true;
+    setTimeout(() => gameControls.upPressed = false, 200);
+}
+rightControl.onclick = () => {
+    gameControls.rightPressed = true;
+    setTimeout(() => gameControls.rightPressed = false, 200);
+}
+leftControl.onclick = () => {
+    gameControls.leftPressed = true;
+    setTimeout(() => gameControls.leftPressed = false, 200);
+}   
+downControl.onclick = () => {
+    gameControls.downPressed = true;
+    setTimeout(() => gameControls.downPressed = false, 200)
+}
+
+const keyDownHandler = e => {
+    switch (e.keyCode) {
+        case 39:
+            gameControls.rightPressed = true;
+            break;
+        case 37:
+            gameControls.leftPressed = true;
+            break;
+        case 38:
+            gameControls.upPressed = true;
+            break;
+        case 40:
+            gameControls.downPressed = true;
+            break;
+    }
+}
+
+const keyUpHandler = e => {
+    switch (e.keyCode) {
+        case 39:
+            gameControls.rightPressed = false;
+            break;
+        case 37:
+            gameControls.leftPressed = false;
+            break;
+        case 38:
+            gameControls.upPressed = false;
+            break;
+        case 40:
+            gameControls.downPressed = false;
+            break;
+    }
+}
+
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+
+// frog movement
+//set the frog position back
+const setFrogStraight = () => {
+    frog.sx = 2;
+    frog.sy = 13;
+    frog.swidth = 55;
+    frog.sheight = 35;
+    frog.width = 45;
+    frog.height = 28;
+}
+
+const setFrogRight = () => {
+    frog.sx = 32;
+    frog.sy = 143;
+    frog.swidth = 35;
+    frog.sheight = 55;
+    frog.width = 28;
+    frog.height = 45;
+}
+
+const setFrogLeft = () => {
+    frog.sx = 88;
+    frog.sy = 140;
+    frog.swidth = 35;
+    frog.sheight = 53;
+    frog.width = 28;
+    frog.height = 45;
+}
+
+//frog jump movement
+const frogJumpUpDown = () => {
+    frog.sy = 13;
+    frog.sx = 58;
+    frog.sheight = 55;
+    frog.swidth = 55;
+    frog.height = 50;
+    frog.width = 40;
+}
+
+const frogJumpRight = () => {
+    frog.sx = 20;
+    frog.sy = 196;
+    frog.swidth = 55;
+    frog.sheight = 55;
+    frog.width = 48;
+    frog.height = 40;
+}
+
+const frogJumpLeft = () => {
+    frog.sx = 88;
+    frog.sy = 196;
+    frog.swidth = 55;
+    frog.sheight = 55;
+    frog.width = 48;
+    frog.height = 40;
+}
+
+//on the keys up and down make the frog move
+const moveFrog = () => {
+    if (gameControls.upPressed && gameControls.up && frog.y > 20) {
+        frogJumpUpDown();
+        setTimeout(() => setFrogStraight(), 100);
+        frog.y = frog.lastY - 44;
+        frog.lastY = frog.y;
+        gameControls.up = false;
+    } gameControls.upPressed == false ? gameControls.up = true : gameControls.up = false;
+    if (gameControls.downPressed && gameControls.down && frog.y < canvas.height - 80) {
+        frogJumpUpDown();
+        setTimeout(() => setFrogStraight(), 100);
+        frog.y = frog.lastY + 44;
+        frog.lastY = frog.y;
+        gameControls.down = false;
+    } gameControls.downPressed == false ? gameControls.down = true : gameControls.down = false;
+    if (gameControls.rightPressed && gameControls.right && frog.x + frog.width < canvas.width) {
+        frogJumpRight();
+        setTimeout(() => setFrogRight(), 100)
+        frog.x += 44;
+        frog.y = frog.lastY - 2;
+        gameControls.right = false;
+    } gameControls.rightPressed == false ? gameControls.right = true : gameControls.right = false;
+    if (gameControls.leftPressed && gameControls.left && frog.x > 20) {
+        frogJumpLeft()
+        setTimeout(() => setFrogLeft(), 100)
+        frog.x -= 44;
+        frog.y = frog.lastY - 2;
+        gameControls.left = false;
+    } gameControls.leftPressed == false ? gameControls.left = true : false;
+}
+
+
 //game functionality
 //update lives when frog is drown or runover
 const updateLives = () => {
     lives--
     livesHtml.innerHTML = lives;
-        if (lives === 0) {
+    if (lives === 0) {
         lives = 5;
         level = 0;
         livesHtml.innerHTML = lives;
         scoreHtml.innerHTML = score;
         alert("GAME OVER!");
     }
+}
+
+
+//update score if for reaches a pad
+const updateScore = () => {
+    score += scoreIncrement * level;
+    scoreHtml.innerHTML = score;
+    checkPadsFull();
 }
 
 //check if all pads have a frog on them
@@ -213,23 +382,16 @@ const checkPadsFull = () => {
     padsFullArray.every(isTrue) ? newGame() : "";
 }
 
-//update score if for reaches a pad
-const updateScore = () => {
-    score += scoreIncrement * level;
-    scoreHtml.innerHTML = score;
-    checkPadsFull();
-}
-
 //start new game when end of level is reached
 const newGame = () => {
     floatItems.forEach(element => {
         element.frogFloat = false;
-        if (element.type = 'pad') {
+        if (element.type === 'pad') {
             element.newFrog = false;
         }
     })
-    y = 445;
-    lastY = 445;
+    frog.y = 445;
+    frog.lastY = 445;
     lives = 5;
     level++;
     livesHtml.innerHTML = lives;
@@ -238,43 +400,6 @@ const newGame = () => {
     floatSpeed += 0.1;
     carSpeed += 0.2;
 }
-
-function keyDownHandler(e) {
-    switch (e.keyCode) {
-        case 39:
-            rightPressed = true;
-            break;
-        case 37:
-            leftPressed = true;
-            break;
-        case 38:
-            upPressed = true;
-            break;
-        case 40:
-            downPressed = true;
-            break;
-    }
-}
-
-function keyUpHandler(e) {
-    switch (e.keyCode) {
-        case 39:
-            rightPressed = false;
-            break;
-        case 37:
-            leftPressed = false;
-            break;
-        case 38:
-            upPressed = false;
-            break;
-        case 40:
-            downPressed = false;
-            break;
-    }
-}
-
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
 
 //draw background and all of the items
 function drawBackground() {
@@ -314,20 +439,21 @@ function drawBackground() {
 }
 
 function drawFrog() {
-    ctx.drawImage(frog, sx, sy, swidth, sheight, x, y, width, height);
+    ctx.drawImage(frogImage, frog.sx, frog.sy, frog.swidth, frog.sheight, frog.x, frog.y, frog.width, frog.height);
 }
 
 function drawRunOverFrog() {
-    if (deadReason === "runOver") {
-        ctx.drawImage(drownFrog, 2, 2, 65, 75, runOverX, runOverY, 50, 50);
+    if (frog.deadReason === "runOver") {
+        ctx.drawImage(deadFrogImage, 2, 2, 65, 75, frog.deadX, frog.deadY, 50, 50);
     }
 }
 
-var drownFrog = new Image();
-drownFrog.src = "frog-die.png";
+var deadFrogImage = new Image();
+deadFrogImage.src = "frog-die.png";
+
 function drawDrownFrog() {
-    if (deadReason === "drown") {
-        ctx.drawImage(drownFrog, 80, 10, 55, 35, drownX, drownY, 52, 30);
+    if (frog.deadReason === "drown") {
+        ctx.drawImage(deadFrogImage, 80, 10, 55, 35, frog.deadX, frog.deadY, 52, 30);
     }
 }
 
@@ -335,7 +461,7 @@ function drawCars() {
     cars.forEach(car => {
         ctx.drawImage(car.image, car.sx, car.sy, car.swidth, car.sheight, car.x, car.y, car.width, car.height);
         if (car.x < canvas.width + 100) {
-            car.x += 1;
+            car.x += carSpeed;
         } else {
             car.x = -100;
             let randomValue = Math.floor(Math.random() * car.sxArray.length);
@@ -348,7 +474,7 @@ function drawLogs() {
     let movement = 0;
     logs.forEach(log => {
         ctx.drawImage(log.image, log.sx, log.sy, log.swidth, log.sheight, log.x, log.y, log.width, log.height);
-        log.floatLeft === true  ? movement = -floatSpeed : movement = floatSpeed;
+        log.floatLeft === true ? movement = -floatSpeed : movement = floatSpeed;
         log.movement = movement;
         if (log.floatLeft === true) {
             log.x > - 200 ? log.x += movement : log.x = canvas.width + 100;
@@ -359,51 +485,45 @@ function drawLogs() {
     )
 }
 
+
+const turtleSink = () => {
+    turtles.forEach(turtle => {
+        if (turtle.frogFloat === true && turtle.turtleSink === false) {
+            turtle.turtleSink = true;
+            setTimeout(() => {
+                turtle.floatLeft ? turtle.sx = 7 : turtle.sx = 550;
+            }, 1500)
+            setTimeout(() => {
+                turtle.underWater = true;
+            }, 3000)
+            setTimeout(() => {
+                turtle.underWater = false;
+                turtle.floatLeft ? turtle.sx = 7 : turtle.sx = 550;
+            }, 4000)
+            setTimeout(() => {
+                turtle.floatLeft ? turtle.sx = 230 : turtle.sx = 10;
+                turtle.turtleSink = false;
+            }, 5500)
+        }
+    })
+}
+
+
 const drawTurtles = () => {
     let movement = 0;
     turtles.forEach(turtle => {
-        if (turtle.turtleSink === false) {
-            ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height)};
-            turtle.floatLeft === false ? movement = floatSpeed : movement = -floatSpeed;
-            turtle.movement = movement;
-            if (turtle.floatLeft === true) {
-                turtle.x > - 200 ? turtle.x += movement : turtle.x = canvas.width + 100;
-            } else {
-                turtle.x < canvas.width + 100 ? turtle.x += movement : turtle.x = -100;
-            }    
-            if (turtle.frogFloat === true && turtle.image === turtleImageToLeft ){
-                setTimeout(() => {
-                    turtle.sx = 7; 
-                 }, 1500)
-                setTimeout(() => {
-                    turtle.turtleSink = true;                      
-                }, 3000)
-                setTimeout(() => {
-                    turtle.turtleSink = false;
-                    turtle.sx = 7;                      
-                }, 4000)
-                setTimeout(() => {
-                    turtle.sx = 230;                 
-                }, 5500)
-
-            } else if (turtle.frogFloat === true && turtle.image === turtleImageToRight){
-                setTimeout(() => {
-                    turtle.sx = 550; 
-                 }, 1500)
-                setTimeout(() => {
-                    turtle.turtleSink = true;                      
-                }, 3000)
-                setTimeout(() => {
-                    turtle.turtleSink = false;
-                    turtle.sx = 550;                       
-                }, 4000)
-                setTimeout(() => {
-                    turtle.sx = 10;                 
-                }, 5500)                               
-            
+        if (turtle.underWater === false) {
+            ctx.drawImage(turtle.image, turtle.sx, turtle.sy, turtle.swidth, turtle.sheight, turtle.x, turtle.y, turtle.width, turtle.height)
+        };
+        if (turtle.floatLeft === true) {
+            movement = -floatSpeed;
+            turtle.x > - 200 ? turtle.x += movement : turtle.x = canvas.width + 100;
+        } else {
+            movement = floatSpeed;
+            turtle.x < canvas.width + 100 ? turtle.x += movement : turtle.x = -100;
         }
-    }
-    )
+        turtle.movement = movement;
+    })
 }
 
 const drawPads = () => {
@@ -413,25 +533,25 @@ const drawPads = () => {
     )
 }
 
+const collision = item => {
+    if (frog.x > -10 && frog.x < canvas.width - 10 &&
+        item.x <= frog.x + (frog.width / 2) &&
+        item.x + item.width >= frog.x + (frog.width / 2) &&
+        item.y + (item.height / 2) >= frog.y &&
+        item.y <= frog.y + frog.height) {
+        return true;
+    }
+}
+
 //check if the frog is on floatitem and make frog float 
 const frogFloat = () => {
     floatItems.forEach(floatItem => {
-        if (x > -10 && x < canvas.width - 10 &&
-            floatItem.x <= x + (width / 2) &&
-            floatItem.x + floatItem.width >= x + (width / 2) &&
-            floatItem.y + (floatItem.height / 2) >= y &&
-            floatItem.y <= y + height) {        
-            if (floatItem.turtleSink) {
-                floatItem.turtleSink === true ? floatItem.frogFloat = false : (floatItem.frogFloat = true, x = x + floatItem.movement);
-                x = x + floatItem.movement;
-            } else {
-                floatItem.frogFloat = true
-                x = x + floatItem.movement; 
-                frogOnPad();
-            }           
-        } else {
+        if (collision(floatItem)) {
+            floatItem.underWater ? floatItem.frogFloat = false : floatItem.frogFloat = true;
+            frog.x += floatItem.movement;
+        }
+        else {
             floatItem.type !== 'pad' ? floatItem.frogFloat = false : "";
-            frogOnPad();
         }
     })
 }
@@ -440,157 +560,53 @@ const frogFloat = () => {
 const frogOnPad = () => {
     pads.forEach(pad => {
         if (pad.frogFloat === true) {
-            ctx.drawImage(frog, 2, 13, 55, 35, pad.x, pad.y + 10, 52, 28);
+            ctx.drawImage(frogImage, 2, 13, 55, 35, pad.x, pad.y + 10, 52, 28);
             if (pad.newFrog === false) {
-                y = 445;
-                lastY = 445;
+                frog.y = 445;
+                frog.lastY = 445;
                 pad.newFrog = true;
                 setTimeout(() => {
                     updateScore();
                 }, 1000)
-                
+
             }
+        }
+    })
+}
+
+function runOver() {
+    cars.forEach(car => {
+        if (collision(car)) {
+            frog.deadReason = "runOver";
+            frog.deadX = frog.x;
+            frog.deadY = frog.y;
+            frog.y = 445;
+            frog.lastY = 445;
+            updateLives();
+            setTimeout(() => frog.deadReason = undefined, 1700)
         }
     })
 }
 
 
 //check if frog is drown 
-// when frog is not on a floatitem, but in the water area
+// when frog is not on a floatitem or pad, but in the water area
 function drown() {
-    if (logOne.frogFloat == false &&
-        logTwo.frogFloat == false &&
-        logThree.frogFloat == false &&
-        logFour.frogFloat == false &&
-        turtleOne.frogFloat == false &&
-        turtleTwo.frogFloat == false &&
-        turtleThree.frogFloat == false &&
-        turtleFour.frogFloat == false &&
-        y < 200) {
-        deadReason = "drown";
-        drownX = x;
-        drownY = y;
-        y = 445;
-        lastY = 445;
-        x = 30;
-        updateLives();
-        setTimeout(() => deadReason = undefined, 1500)
-    }
-}
-
-// frog movement
-//set the frog position back
-const setFrogStraight = () => {
-    sx = 2;
-    sy = 13;
-    swidth = 55;
-    sheight = 35;
-    width = 45;
-    height = 28;
-}
-
-const setFrogRight = () => {
-    sx = 32;
-    sy = 143;
-    swidth = 35;
-    sheight = 55;
-    width = 28;
-    height = 45;
-}
-
-const setFrogLeft = () => {
-    sx = 88;
-    sy = 140;
-    swidth = 35;
-    sheight = 53;
-    width = 28;
-    height = 45;
-}
-
-//frog jump movement
-const frogJumpUpDown = () => {
-    sy = 13;
-    sx = 58;
-    sheight = 55;
-    swidth = 55;
-    height = 50;
-    width = 40;
-}
-
-const frogJumpRight = () => {
-    sx = 20;
-    sy = 196;
-    swidth = 55;
-    sheight = 55;
-    width = 48;
-    height = 40;
-}
-
-const frogJumpLeft = () => {
-    sx = 88;
-    sy = 196;
-    swidth = 55;
-    sheight = 55;
-    width = 48;
-    height = 40;
-}
-
-//on the keys up and down make the frog move
-function moveFrog() {
-    if (upPressed == true && up == true && y > 20) {
-        frogJumpUpDown();
-        setTimeout(() => {
-            setFrogStraight();
-        }, 100);
-        y = lastY - 44;
-        lastY = y;
-        up = false;
-    } upPressed == false ? up = true : up = false;
-    if (downPressed == true && down == true && y < canvas.height - 80) {
-        frogJumpUpDown();
-        setTimeout(() => {
-            setFrogStraight();
-        }, 100);
-        y = lastY + 44;
-        lastY = y;
-        down = false;
-    } downPressed == false ? down = true : down = false;
-    if (rightPressed == true && right == true && x + width < canvas.width) {
-        frogJumpRight();
-        setTimeout(() => {
-            setFrogRight();
-        }, 100)
-        x = x + 44;
-        y = lastY - 2;
-        right = false;
-    } rightPressed == false ? right = true : right = false;
-    if (leftPressed == true && left == true && x > 20) {
-        frogJumpLeft()
-        setTimeout(() => {
-            setFrogLeft();
-        }, 100)
-        x = x - 44;
-        y = lastY - 2;
-        left = false;
-    } leftPressed == false ? left = true : false;
-}
-
-function runOver() {
-    cars.forEach(car => {
-        if (car.x <= x + width &&
-            car.x + car.width >= x + (width / 1.5) &&
-            car.y + car.height >= y + (height / 2) &&
-            car.y <= y + (height / 1.5)) {
-            deadReason = "runOver";
-            runOverX = x;
-            runOverY = y;
-            y = 445;
-            lastY = 445;
-            updateLives();
-            setTimeout(() => deadReason = undefined, 1700)
-        }
-
+    let anyFrogFloat = false
+    floatItems.forEach(floatItem => {
+        floatItem.type !== 'pad' && floatItem.frogFloat === true ? anyFrogFloat = true : ""
     })
+    if (anyFrogFloat === false &&
+        frog.y < 200) {
+        frog.deadReason = "drown";
+        frog.deadX = frog.x;
+        frog.deadY = frog.y;
+        frog.y = 445;
+        frog.lastY = 445;
+        frog.x = 30;
+        updateLives();
+        setTimeout(() => frog.deadReason = undefined, 1700)
+    }
 }
 
 function draw() {
@@ -600,10 +616,12 @@ function draw() {
     drawRunOverFrog();
     drawLogs();
     drawTurtles();
+    turtleSink();
     drawPads();
     moveFrog();
     drawFrog();
     frogFloat();
+    frogOnPad();
     drawCars();
     runOver();
     drown();
