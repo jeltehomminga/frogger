@@ -164,7 +164,7 @@ const updateLives = () => {
     livesHtml.innerHTML = lives;
     if (lives === 0) {
         lives = 5;
-        level = 0;
+        level = 1;
         livesHtml.innerHTML = lives;
         scoreHtml.innerHTML = score;
         alert("GAME OVER!");
@@ -304,7 +304,7 @@ const frogFloat = () => {
             floatItem.type !== 'pad' ? floatItem.frogFloat = false : "";
         }
     })
-}
+};
 
 //when frog reaches the pad leave frog on pad and draw new frog
 const frogOnPad = () => {
@@ -315,14 +315,11 @@ const frogOnPad = () => {
                 frog.y = 445;
                 frog.lastY = 445;
                 pad.newFrog = true;
-                setTimeout(() => {
-                    updateScore();
-                }, 1000)
-
+                setTimeout(() => updateScore(), 500)
             }
         }
     })
-}
+};
 
 function runOver() {
     cars.forEach(car => {
