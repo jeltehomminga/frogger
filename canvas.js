@@ -8,8 +8,8 @@ const levelHtml = document.getElementById('level');
 var lives = 5;
 var score = 0;
 var level = 1;
-var floatSpeed = 0.1;
-var carSpeed = 1;
+var floatSpeed = 0.3;
+var carSpeed = 1.2;
 var scoreIncrement = 10;
 var logs = [];
 var pads = [];
@@ -309,7 +309,7 @@ const frogFloat = () => {
 //when frog reaches the pad leave frog on pad and draw new frog
 const frogOnPad = () => {
     pads.forEach(pad => {
-        if (pad.frogFloat === true) {
+        if (pad.frogFloat) {
             ctx.drawImage(frogImage, 2, 13, 55, 35, pad.x, pad.y + 10, 52, 28);
             if (pad.newFrog === false) {
                 frog.y = 445;
@@ -319,7 +319,7 @@ const frogOnPad = () => {
             }
         }
     })
-};
+}
 
 function runOver() {
     cars.forEach(car => {

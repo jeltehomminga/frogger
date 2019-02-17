@@ -3,63 +3,63 @@ body {
     background: yellow;
     display: flex;
     justify-content: center;
-    /* padding: 2%; */
+    padding: 2% 0;
     font-family: 'Oldenburg', cursive;
     font-size: 1.5rem;
     color: white;
 }
 
+h3 {
+  display: none;
+  color: black;
+  text-align: center;
+}
+
 .game-container {
     display: flex;
     flex-direction: column;
-    width: min-content;
     /* max-width: 90%; */
 }
 
 .game-result {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    /* margin: 2% 0%; */
+    justify-content: space-around;
+    margin: 2% 0%;
     background: black;
     border-style: dashed;
     border-color: grey;
-    /* padding: 2% 0; */
+    padding: 2% 0;
 }
 canvas {
     background: black;
-    /* max-width: 90%; */
+    max-width: 100%;
 }
 
-.controlscontainer {
-    width: 50%;
-    margin-right: 10%;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    text-align: center;
-  }
+.nonupcontrols {
+  display: none;
+}
   
   .control {
-    width: 55px;
-    background-color: lightslategrey;
+    width: 75px;
+    background-color: black;
     border-radius: 10px;
   }
 
   td {
-    width: 65px;
-    height: 45px;
+    width: 50px;
+    height: 40px;
     position: relative;
     margin: 0;
-    border: groove burlywood;
-    background-color: rgba(32, 122, 138, 0.6);
+    border-style: dashed;
+    border-color: grey;
+    border-width: 3px;
   }
   
   
   i {
-    font-size: 30px;
-    color: purple;
+    font-size: 60px;
+    color: white;
   }
   
   .hidden {
@@ -67,17 +67,30 @@ canvas {
   }
   
   table {
+    text-align: center;
     margin: 0 auto;
     margin-top: 3%;
   }
 
 @media only screen and (max-width: 700px) {
 
-    .game-container {
-        display: flex;
-        flex-direction: column;
-        max-width: 90%;
-    }
+  body {
+    font-size: 1rem;
+  }
+
+  h3{
+    display: block;
+  }
+
+  .game-container {
+      display: flex;
+      flex-direction: column;
+      max-width: 90%;
+  }
+
+  .nonupcontrols {
+    display: block;
+  }
 
 
   }

@@ -1,4 +1,3 @@
-
 var frogImage = new Image();
 frogImage.src = "frogs.png";
 var deadFrogImage = new Image();
@@ -128,7 +127,6 @@ const createTurtles = () => {
     turtles.forEach(element => floatItems.push(element));
 }
 
-
 //the logs in the water
 var logsImage = new Image();
 logsImage.src = "logs.png";
@@ -163,7 +161,6 @@ const createLogs = () => {
     logs = [logOne, logTwo, logThree, logFour];
     logs.forEach(element => floatItems.push(element));
 }
-
 
 //the pads where the turtle can jump on
 var padImage = new Image();
