@@ -116,7 +116,7 @@ const setFrogRight = () => {
     frog.swidth = 35;
     frog.sheight = 55;
     frog.width = 28;
-    frog.height = 45;
+    frog.height = 42;
 }
 
 const setFrogLeft = () => {
@@ -125,7 +125,7 @@ const setFrogLeft = () => {
     frog.swidth = 35;
     frog.sheight = 53;
     frog.width = 28;
-    frog.height = 45;
+    frog.height = 42;
 }
 
 //frog jump movement
