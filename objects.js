@@ -216,18 +216,18 @@ class Car {
         this.sheight = 60;
         this.x = x
         this.y = y;
-        this.width = 75;
-        this.height = 30;
+        this.width = 70;
+        this.height = 28;
     }
 }
 
 const createCars = () => {
-    carOne = new Car(carsImage, carsImage.src, 'carOne', 200, 400);
-    carTwo = new Car(carsImage, carsImage.src, 'carTwo', 1800, 400);
-    carThree = new Car(carsImage, carsImage.src, 'carThree', -200, 352);
+    carOne = new Car(carsImage, carsImage.src, 'carOne', 200, 406);
+    carTwo = new Car(carsImage, carsImage.src, 'carTwo', 1800, 406);
+    carThree = new Car(carsImage, carsImage.src, 'carThree', -200, 360);
     carFour = new Car(carsImage, carsImage.src, 'carFour', -600, 270);
-    carFive = new Car(carsImage, carsImage.src, 'carFive', 400, 310);
-    carSix = new Car(carsImage, carsImage.src, 'carSix', 120, 355);
+    carFive = new Car(carsImage, carsImage.src, 'carFive', 400, 314);
+    carSix = new Car(carsImage, carsImage.src, 'carSix', 120, 360);
     cars = [carOne, carTwo, carThree, carFour, carFive, carSix];
 }
 
