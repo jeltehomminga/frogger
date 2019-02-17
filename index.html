@@ -6,8 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Oldenburg" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+        crossorigin="anonymous" />
     <title>Frogger</title>
+
     <link type="text/css" rel="stylesheet" href="./canvas.css" />
+
+
 </head>
 
 <body>
@@ -19,9 +24,38 @@
         </div>
         <div class="game-screen">
             <canvas id="canvas" width="570" height="540"></canvas>
-            <script src="./canvas.js"></script>
+        </div>
+        <div class="nonupcontrols">
+            <h3>navigate with arrow keys</h3>
+            <table>
+                <tr>
+                    <td class="hidden"></td>
+                    <td id="upcontrol" class="control">
+                        <i class="fas fa-angle-up"></i>
+                    </td>
+                    <td class="hidden"></td>
+                </tr>
+                <tr>
+                    <td id="leftcontrol" class="control">
+                        <i class="fas fa-angle-left"></i>
+                    </td>
+                    <td class="hidden"></td>
+                    <td id="rightcontrol" class="control">
+                        <i class="fas fa-angle-right"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="hidden"></td>
+                    <td id="downcontrol" class="control">
+                        <i class="fas fa-angle-down"></i>
+                    </td>
+                    <td class="hidden"></td>
+                </tr>
+            </table>
         </div>
     </div>
+    <script src="./objects.js"></script>
+    <script src="./canvas.js" defer></script>
 </body>
 
 </html>
